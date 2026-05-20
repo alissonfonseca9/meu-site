@@ -34,7 +34,9 @@ REGRAS DE SERVIÇO:
 
 Se o usuário enviar apenas uma saudação inicial (Oi, Olá), responda de forma receptiva: 'Olá! Como posso ajudar com a manutenção do seu computador ou notebook hoje?'`;
 
-app.post('/chat', async (req, res) => {
+
+
+app.post('/chat', async (req, res) => {  // <--- ACHOU! Começa aqui na linha 41
     try {
         const { mensagem } = req.body;
         
@@ -46,10 +48,12 @@ app.post('/chat', async (req, res) => {
                 { role: 'system', content: regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
-            model: 'llama-3.3-70b-versatile', 
+            model: 'llama-3.3-70b-versatile', // <--- A linha do modelo para alterar fica bem aqui (linha 54)
             temperature: 0.3, 
             max_tokens: 120,  
         });
+
+
 
         let respostaFinal = chatCompletion.choices[0]?.message?.content?.trim() || "";
 
