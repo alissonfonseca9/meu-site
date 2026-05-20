@@ -9,7 +9,7 @@ app.use(express.json());
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Prompt ultra-enxuto focado em respostas sem rodeios
+// CORRIGIDO: Nome da variável idêntico ao usado na chamada da API
 const regrasDoChatbot = `Você é o Assistente.sys, chatbot da assistência de computadores do Alisson Fonseca em Maceió.
 
 DIRETRIZES DE RESPOSTA (OBRIGATÓRIO):
@@ -35,12 +35,12 @@ app.post('/chat', async (req, res) => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: reglasDoChatbot },
+                { role: 'system', content: regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
             model: 'llama-3.3-70b-versatile', 
-            temperature: 0.1, // Praticamente zera a "criatividade" para ele seguir a regra à risca
-            max_tokens: 100,  // Resposta ainda menor e mais direta
+            temperature: 0.1, 
+            max_tokens: 100,  
         });
 
         let respostaFinal = chatCompletion.choices[0]?.message?.content?.trim() || "";
