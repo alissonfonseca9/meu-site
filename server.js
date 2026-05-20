@@ -24,6 +24,7 @@ const regrasDoChatbot = `Você é o Assistente.sys, assistente virtual do Alisso
 Se a mensagem do usuário for uma palavra solta, saudação ou confusa, responda educadamente se apresentando e perguntando qual o defeito do notebook ou computador de mesa dele.`;
 
 // Cria a rota que o seu site vai chamar
+// Cria a rota que o seu site vai chamar
 app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body; 
@@ -44,7 +45,7 @@ app.post('/chat', async (req, res) => {
             textoUsuario = "Olá";
         }
 
-        // Força o envio como uma string limpa dentro de 'contents', ignorando históricos mal formatados do front-end
+        // COMANDO AJUSTADO PARA O GEMINI 1.5 FLASH:
         const response = await ai.models.generateContent({
             model: 'gemini-1.5-flash',
             contents: textoUsuario, 
