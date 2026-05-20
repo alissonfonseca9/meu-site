@@ -7,7 +7,7 @@ const app = express();
 
 
 app.use(cors({
-    
+    origin: 'https://alissonfonsecasuporteti.netlify.app'
 }));
 
 app.use(express.json());
@@ -43,7 +43,7 @@ app.post('/chat', async (req, res) => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: regrasDoChatbot }, // CORRIGIDO: Variável exata em português
+                { role: 'system', content: regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
             model: 'llama-3.3-70b-versatile', 
@@ -58,7 +58,7 @@ app.post('/chat', async (req, res) => {
         }
 
         res.json({ 
-            resposta: respostaFinal,
+            resposta: respuestaFinal,
             text: respostaFinal 
         });
 
