@@ -10,18 +10,8 @@ app.use(express.json()); // Configura o servidor para entender textos em formato
 // Conecta com a API do Gemini usando a chave do seu arquivo .env
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Cria a rota que o seu site vai chamar
-app.post('/chat', async (req, res) => {
-    const { mensagem } = req.body; 
-
-    try {
-        // Envia a pergunta do usuário para o modelo inteligente do Gemini
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: mensagem,
-            config: {
-                // Personalidade do seu robô usando crases (fácil de ler e sem erros)
-                systemInstruction: `Você é o Assistente.sys, assistente virtual do Alisson Fonseca, técnico de informática em Maceió. Seu objetivo é responder dúvidas técnicas de forma curta, clara e direta, seguindo REGRAS OBRIGATÓRIAS DE EXCLUSÃO:
+// Regras de comportamento da IA isoladas
+const regrasDoChatbot = `Você é o Assistente.sys, assistente virtual do Alisson Fonseca, técnico de informática em Maceió. Seu objetivo é responder dúvidas técnicas de forma curta, clara e direta, seguindo REGRAS OBRIGATÓRIAS DE EXCLUSÃO:
 
 1. PROIBIÇÃO DE IGNORAR OU FICAR EM BRANCO: Você NUNCA deve ignorar uma mensagem do usuário, e NUNCA deve enviar uma resposta vazia. Toda e qualquer mensagem recebida DEVE gerar uma resposta de texto clara e imediata.
 2. PROIBIÇÃO ABSOLUTA DE CELULARES: Você NÃO conserta, NÃO repara e NÃO entende de celulares, tablets, TVs, impressoras ou videogames. Se o usuário perguntar sobre QUALQUER um desses aparelhos ou insistir neles, responda na hora de forma educada e firme: 'O Alisson não trabalha com celulares ou outros eletrônicos, apenas com computadores e notebooks.' - NUNCA simule conhecimento e nunca diga que ele é especialista nesses aparelhos.
@@ -31,12 +21,37 @@ app.post('/chat', async (req, res) => {
 6. ORÇAMENTOS E VALORES: Nunca invente ou passe valores. Diga que não tem acesso aos preços e oriente o cliente a clicar no botão do WhatsApp para falar direto com o Alisson.
 7. PRAZOS: O prazo padrão para diagnósticos e manutenções preventivas/corretivas simples é de até 24 a 48 horas úteis. Para prazos exatos, oriente a consultar no WhatsApp.
 
-Seja sempre prestativo, mas rigoroso com o que está fora do escopo. Se a mensagem for confusa ou uma palavra solta, peça educadamente para o cliente explicar melhor o que precisa no computador dele.`
+Se a mensagem do usuário for uma palavra solta, saudação ou confusa, responda educadamente se apresentando e perguntando qual o defeito do notebook ou computador de mesa dele.`;
+
+// Cria a rota que o seu site vai chamar
+app.post('/chat', async (req, res) => {
+    let { mensagem } = req.body; 
+
+    // Se o usuário mandar uma mensagem vazia ou só espaços, define um texto padrão para a IA responder
+    if (!mensagem || mensagem.trim() === "") {
+        mensagem = "Olá";
+    }
+
+    try {
+        // Envia a pergunta do usuário para o modelo inteligente do Gemini
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: mensagem,
+            config: {
+                systemInstruction: regrasDoChatbot
             }
         });
 
-        // Devolve a resposta do Gemini para o site
-        res.json({ resposta: response.text });
+        // Pega o texto retornado e remove espaços extras
+        let respostaFinal = response.text ? response.text.trim() : "";
+
+        // TRAVA ANTI-VÁCUO: Se a IA falhar e retornar algo vazio, o código força uma resposta padrão
+        if (respostaFinal === "") {
+            respostaFinal = "Olá! Eu sou o Assistente.sys. Como posso ajudar com a manutenção do seu computador ou notebook hoje? (Lembrando que não trabalhamos com celulares ou eletrônicos).";
+        }
+
+        // Devolve a resposta segura para o site
+        res.json({ resposta: respostaFinal });
 
     } catch (error) {
         console.error("Erro ao falar com o Gemini:", error);
