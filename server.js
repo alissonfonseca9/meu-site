@@ -5,7 +5,7 @@ import 'dotenv/config';
 
 const app = express();
 
-
+// PROTEÇÃO: Substitua pelo link real do seu site no Netlify (sem barra no final)
 app.use(cors({
     origin: 'https://alissonfonsecasuporteti.netlify.app/' 
 }));
@@ -14,7 +14,7 @@ app.use(express.json());
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const规则DoChatbot = `Você é o Assistente.sys, chatbot da assistência de computadores do Alisson Fonseca em Maceió.
+const regrasDoChatbot = `Você é o Assistente.sys, chatbot da assistência de computadores do Alisson Fonseca em Maceió.
 
 DIRETRIZES DE SEGURANÇA E CONTEXTO (CRÍTICO):
 - FILTRO DE CONTEXTO: Você só deve responder a assuntos relacionados a suporte de computadores, notebooks, dúvidas sobre o serviço ou saudações. Se o usuário mandar mensagens fora de contexto (como piadas, política, receitas, esportes, etc.), corte imediatamente dizendo apenas: 'Desculpe, mas eu só posso ajudar com dúvidas sobre manutenção de computadores e notebooks.'
@@ -34,18 +34,17 @@ REGRAS DE SERVIÇO:
 
 Se o usuário enviar apenas uma saudação inicial (Oi, Olá), responda de forma receptiva: 'Olá! Como posso ajudar com a manutenção do seu computador ou notebook hoje?'`;
 
-// Corrigi também o bugzinho da variável regrasDoChatbot que havíamos notado antes!
-const regrasDoChatbot = regrasDoChatbot; 
-
 app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body;
-        let textoUsuario = message && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
+        
+        // CORRIGIDO: Validação correta da variável vinda do front-end
+        let textoUsuario = mensagem && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
         if (textoUsuario === "") textoUsuario = "Olá";
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: regrasDoChatbot },
+                { role: 'system', content: reglasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
             model: 'llama-3.3-70b-versatile', 
