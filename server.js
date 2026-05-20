@@ -25,18 +25,29 @@ Se a mensagem do usuário for uma palavra solta, saudação ou confusa, responda
 
 // Cria a rota que o seu site vai chamar
 app.post('/chat', async (req, res) => {
-    let { mensagem } = req.body; 
-
-    // Se o usuário mandar uma mensagem vazia ou só espaços, define um texto padrão para a IA responder
-    if (!mensagem || mensagem.trim() === "") {
-        mensagem = "Olá";
-    }
-
     try {
-        // Envia a pergunta do usuário para o modelo inteligente do Gemini
+        const { mensagem } = req.body; 
+
+        // Garante que o texto enviado seja limpo e interpretado estritamente como uma String simples
+        let textoUsuario = "Olá";
+        if (mensagem) {
+            if (typeof mensagem === 'string') {
+                textoUsuario = mensagem.trim();
+            } else if (typeof mensagem === 'object' && mensagem.text) {
+                textoUsuario = mensagem.text.trim();
+            } else {
+                textoUsuario = String(mensagem).trim();
+            }
+        }
+
+        if (textoUsuario === "") {
+            textoUsuario = "Olá";
+        }
+
+        // Força o envio como uma string limpa dentro de 'contents', ignorando históricos mal formatados do front-end
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: mensagem,
+            contents: textoUsuario, 
             config: {
                 systemInstruction: regrasDoChatbot
             }
@@ -45,12 +56,11 @@ app.post('/chat', async (req, res) => {
         // Pega o texto retornado e remove espaços extras
         let respostaFinal = response.text ? response.text.trim() : "";
 
-        // TRAVA ANTI-VÁCUO: Se a IA falhar e retornar algo vazio, o código força uma resposta padrão
+        // Trava de segurança para respostas em branco
         if (respostaFinal === "") {
             respostaFinal = "Olá! Eu sou o Assistente.sys. Como posso ajudar com a manutenção do seu computador ou notebook hoje? (Lembrando que não trabalhamos com celulares ou eletrônicos).";
         }
 
-        // Devolve a resposta segura para o site
         res.json({ resposta: respostaFinal });
 
     } catch (error) {
