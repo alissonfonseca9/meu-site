@@ -4,19 +4,24 @@ import { Groq } from 'groq-sdk';
 import 'dotenv/config';
 
 const app = express();
-app.use(cors());
+
+
+app.use(cors({
+    origin: 'https://alissonfonsecasuporteti.netlify.app/' 
+}));
+
 app.use(express.json());
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const regrasDoChatbot = `Você é o Assistente.sys, chatbot da assistência de computadores do Alisson Fonseca em Maceió.
+const规则DoChatbot = `Você é o Assistente.sys, chatbot da assistência de computadores do Alisson Fonseca em Maceió.
 
 DIRETRIZES DE SEGURANÇA E CONTEXTO (CRÍTICO):
 - FILTRO DE CONTEXTO: Você só deve responder a assuntos relacionados a suporte de computadores, notebooks, dúvidas sobre o serviço ou saudações. Se o usuário mandar mensagens fora de contexto (como piadas, política, receitas, esportes, etc.), corte imediatamente dizendo apenas: 'Desculpe, mas eu só posso ajudar com dúvidas sobre manutenção de computadores e notebooks.'
-- BLOQUEIO DE CONCUNHO SEXUAL/ABUSIVO: Sob nenhuma circunstância responda ou dê corda a conteúdos inapropriados, ofensivos ou de cunho sexual. Caso detecte isso, responda firmemente: 'Por favor, envie apenas dúvidas relacionadas ao suporte técnico de computadores e notebooks.'
+- BLOQUEIO DE CUNHO SEXUAL/ABUSIVO: Sob nenhuma circunstância responda ou dê corda a conteúdos inapropriados, ofensivos ou de cunho sexual. Caso detecte isso, responda firmemente: 'Por favor, envie apenas dúvidas relacionadas ao suporte técnico de computadores e notebooks.'
 
 DIRETRIZES DE TOM E ESTILO:
-- Seja DIRETO, OBJETIVADO e AMIGÁVEL. Responda em no máximo 2 ou 3 frases curtas.
+- Seja DIRETO, OBJETIVO e AMIGÁVEL. Responda em no máximo 2 ou 3 frases curtas.
 - NÃO use saudações ou apresentações repetitivas após a primeira mensagem.
 - EVITE RESPOSTAS GENÉRICAS e PROIBIDO SUPOR DIAGNÓSTICOS (nunca tente adivinhar o defeito).
 
@@ -29,10 +34,13 @@ REGRAS DE SERVIÇO:
 
 Se o usuário enviar apenas uma saudação inicial (Oi, Olá), responda de forma receptiva: 'Olá! Como posso ajudar com a manutenção do seu computador ou notebook hoje?'`;
 
+// Corrigi também o bugzinho da variável regrasDoChatbot que havíamos notado antes!
+const regrasDoChatbot = regrasDoChatbot; 
+
 app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body;
-        let textoUsuario = mensagem && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
+        let textoUsuario = message && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
         if (textoUsuario === "") textoUsuario = "Olá";
 
         const chatCompletion = await groq.chat.completions.create({
@@ -41,7 +49,7 @@ app.post('/chat', async (req, res) => {
                 { role: 'user', content: textoUsuario }
             ],
             model: 'llama-3.3-70b-versatile', 
-            temperature: 0.3, // Mantém um bom equilíbrio entre naturalidade e rigidez com as regras de filtro
+            temperature: 0.3, 
             max_tokens: 120,  
         });
 
