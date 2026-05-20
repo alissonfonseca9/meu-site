@@ -26,13 +26,13 @@ app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body;
         
-        // Trata a entrada caso o front-end envie o objeto antigo do Gemini
+        // CORRIGIDO: Validação limpa e sem risco de quebra por variáveis trocadas
         let textoUsuario = "Olá";
         if (mensagem) {
             if (typeof mensagem === 'string') {
                 textoUsuario = mensagem.trim();
             } else if (typeof mensagem === 'object' && mensagem.text) {
-                textoUsuario = message.text.trim();
+                textoUsuario = String(mensagem.text).trim();
             } else {
                 textoUsuario = String(mensagem).trim();
             }
@@ -56,15 +56,15 @@ app.post('/chat', async (req, res) => {
             respostaFinal = "Olá! Eu sou o Assistente.sys. Como posso ajudar com a manutenção do seu computador ou notebook hoje?";
         }
 
-        // Devolve exatamente no formato que o seu site espera receber (com suporte a 'resposta' e '.text')
+        // Retorna os dois formatos para garantir compatibilidade com o front-end
         res.json({ 
             resposta: respostaFinal,
             text: respostaFinal 
         });
 
     } catch (error) {
-        console.error("Erro ao falar com a Groq:", error);
-        res.status(500).json({ erro: "Ih, deu erro no servidor!", detalhe: error.message });
+        console.error("Erro detectado na rota /chat:", error);
+        res.status(500).json({ erro: "Erro interno no servidor do chat.", detalhe: error.message });
     }
 });
 
