@@ -44,8 +44,9 @@ app.post('/chat', async (req, res) => {
         const chatCompletion = await groq.chat.completions.create({
             messages: [
                 { role: 'system', content: regrasDoChatbot },
+                { role: 'user', content: textoUsuario }
             ],
-            model: 'llama-3.3-70b-specdec', 
+            model: 'llama3-70b-8192', 
             temperature: 0.3, 
             max_tokens: 120,  
         });
