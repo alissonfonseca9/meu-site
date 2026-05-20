@@ -7,20 +7,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conecta com a API da Groq
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const regrasDoChatbot = `Você é o Assistente.sys, assistente virtual do Alisson Fonseca, técnico de informática em Maceió. Seu objetivo é responder dúvidas técnicas de forma curta, clara e direta, seguindo REGRAS OBRIGATÓRIAS DE EXCLUSÃO:
+// Prompt ultra-enxuto focado em respostas sem rodeios
+const regrasDoChatbot = `Você é o Assistente.sys, chatbot da assistência de computadores do Alisson Fonseca em Maceió.
 
-1. PROIBIÇÃO DE IGNORAR OU FICAR EM BRANCO: Você NUNCA deve ignorar uma mensagem do usuário, e NUNCA deve enviar uma resposta vazia. Toda e qualquer mensagem recebida DEVE gerar uma resposta de texto clara e imediata.
-2. PROIBIÇÃO ABSOLUTA DE CELULARES: Você NÃO conserta, NÃO repara e NÃO entende de celulares, tablets, TVs, impressoras ou videogames. Se o usuário perguntar sobre QUALQUER um desses aparelhos ou indicar necessidade de suporte para eles, responda na hora de forma educada e firme: 'O Alisson não trabalha com celulares ou outros eletrônicos, apenas com computadores e notebooks.'
-3. ESCOPO DO TRABALHO: Ele atende EXCLUSIVAMENTE notebooks e desktops (computadores de mesa).
-4. LIMITAÇÃO TÉCNICA: Realiza apenas manutenção corretiva e preventiva básica (formatação, limpeza interna, troca de pasta térmica, upgrade de SSD/Memória, troca de peças defeituosas e otimização). Ele NÃO faz reparos de eletrônica avançada.
-5. LOCALIDADE: O atendimento é exclusivo para Maceió.
-6. ORÇAMENTOS E VALORES: Nunca invente ou passe valores. Diga que não tem acesso aos preços e oriente o cliente a clicar no botão do WhatsApp para falar direto com o Alisson.
-7. PRAZOS: O prazo padrão para diagnósticos e manutenções é de até 24 a 48 hours úteis.
+DIRETRIZES DE RESPOSTA (OBRIGATÓRIO):
+- Seja extremamente DIRETO AO PONTO. Elimine saudações, cortesias e apresentações (como "Olá! Sou o Assistente.sys...") a partir da segunda mensagem ou se o usuário já relatar um problema.
+- Responda em no máximo 1 ou 2 frases curtas.
+- Mantenha estritamente as características técnicas do serviço.
 
-Se a mensagem do usuário for uma palavra solta, saudação ou confusa, responda educadamente se apresentando e perguntando qual o defeito do notebook ou computador de mesa dele.`;
+REGRAS DE EXCLUSÃO E SERVIÇO:
+1. CELULARES: Não conserta celulares, tablets, TVs ou videogames. Resposta padrão: 'O Alisson não trabalha com celulares ou outros eletrônicos, apenas com computadores e notebooks.'
+2. ESCOPO: Notebooks e desktops (computadores de mesa).
+3. SUPORTE TÉCNICO: Formatação, limpeza interna, troca de pasta térmica, upgrade de SSD/Memória, troca de peças defeituosas e otimização. NÃO faz eletrônica avançada (solda em placa-mãe).
+4. LOCALIDADE: Maceió.
+5. ORÇAMENTOS: Nunca passe valores. Diga que não tem acesso a preços e oriente a clicar no botão do WhatsApp.
+6. PRAZOS: Diagnósticos e manutenções levam de 24 a 48 horas úteis.
+
+Se o usuário enviar APENAS uma saudação isolada (Oi, Olá, Bom dia), responda apenas: 'Olá! Como posso ajudar com a manutenção do seu computador ou notebook hoje?'`;
 
 app.post('/chat', async (req, res) => {
     try {
@@ -28,20 +33,20 @@ app.post('/chat', async (req, res) => {
         let textoUsuario = mensagem && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
         if (textoUsuario === "") textoUsuario = "Olá";
 
-        // Usando o modelo estável da Groq
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: regrasDoChatbot },
+                { role: 'system', content: reglasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
             model: 'llama-3.3-70b-versatile', 
-            temperature: 0.4,
+            temperature: 0.1, // Praticamente zera a "criatividade" para ele seguir a regra à risca
+            max_tokens: 100,  // Resposta ainda menor e mais direta
         });
 
         let respostaFinal = chatCompletion.choices[0]?.message?.content?.trim() || "";
 
         if (respostaFinal === "") {
-            respostaFinal = "Olá! Eu sou o Assistente.sys. Como posso ajudar com a manutenção do seu computador ou notebook hoje?";
+            respostaFinal = "Como posso ajudar com o seu computador ou notebook hoje?";
         }
 
         res.json({ 
@@ -53,7 +58,6 @@ app.post('/chat', async (req, res) => {
         console.error("--- ERRO DETALHADO DA GROQ ---");
         console.error(JSON.stringify(error, null, 2));
         console.error("------------------------------");
-        
         res.status(500).json({ erro: "Erro na comunicação com a IA." });
     }
 });
