@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alisson Fonseca — Técnico de Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #1a1a24;
+      --border: #2a2a3a;
+      --accent: #00e5ff;
+      --accent2: #7b5ea7;
+      --accent3: #ff6b35;
+      --text: #e8e8f0;
+      --muted: #7a7a90;
+      --success: #00d68f;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    }
+    .cursor-ring {
+      width: 34px; height: 34px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+      opacity: 0.6;
+    }
+    body:has(a:hover) .cursor, body:has(button:hover) .cursor, body:has(.chatbot-toggle:hover) .cursor, body:has(.chat-close:hover) .cursor, body:has(.chat-input-area button:hover) .cursor {
+      width: 16px; height: 16px;
+      background: var(--accent3);
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      padding: 10px 22px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      cursor: none;
+      letter-spacing: 0.06em;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 0%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%);
+      top: -200px; right: -150px;
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,94,167,0.08) 0%, transparent 70%);
+      bottom: -100px; left: 50px;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    .hero-tag::before { content: '// '; opacity: 0.5; }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 900px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.4s;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+    .hero h1 .line2 { display: block; padding-left: 80px; }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-top: 36px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.6s;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; align-items: center;
+      margin-top: 44px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.8s;
+    }
+    .btn-primary {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 16px 36px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      cursor: none;
+      letter-spacing: 0.02em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,229,255,0.25);
+    }
+    .btn-ghost {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      display: flex; align-items: center; gap: 8px;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-ghost::after { content: '→'; transition: transform 0.2s; }
+    .btn-ghost:hover::after { transform: translateX(4px); }
+
+    .hero-stats {
+      display: flex; gap: 48px;
+      margin-top: 72px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 1s;
+    }
+    .stat-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+    }
+    .stat-val span { color: var(--accent); }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* ─── TICKER ─── */
+    .ticker {
+      overflow: hidden;
+      background: var(--accent);
+      padding: 12px 0;
+    }
+    .ticker-track {
+      display: flex; gap: 0;
+      animation: ticker 22s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--bg);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0 32px;
+    }
+    .ticker-sep { color: rgba(10,10,15,0.4); }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ─── SERVICES ─── */
+    .section { padding: 120px 48px; }
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-label::before { content: '01 / '; opacity: 0.4; }
+    .section-label.s2::before { content: '02 / '; }
+    .section-label.s3::before { content: '03 / '; }
+    .section-label.s4::before { content: '04 / '; }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      max-width: 600px;
+      margin-bottom: 64px;
+    }
+    .section-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+    }
+    .service-card {
+      background: var(--surface);
+      padding: 40px 36px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, background 0.3s;
+      cursor: none;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,0.04), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .service-card:hover { border-color: var(--accent); }
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      display: block;
+      filter: grayscale(0.3);
+    }
+    .service-num {
+      position: absolute; top: 20px; right: 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--border);
+      letter-spacing: 0.1em;
+    }
+    .service-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .service-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .service-tag {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 2px;
+      letter-spacing: 0.08em;
+    }
+    .service-card:hover .service-tag { border-color: var(--accent); color: var(--accent); }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-section { background: var(--surface); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      margin-top: 64px;
+      border: 1px solid var(--border);
+    }
+    .step {
+      padding: 44px 36px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .step:last-child { border-right: none; }
+    .step-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 20px;
+      letter-spacing: -0.06em;
+    }
+    .step:hover .step-num { color: var(--accent); transition: color 0.3s; }
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .step-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; font-weight: 300; }
+    .step-arrow {
+      position: absolute;
+      top: 44px; right: -14px;
+      width: 28px; height: 28px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      color: var(--accent);
+      z-index: 1;
+    }
+
+    /* ─── PRICING ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2px;
+    }
+    .plan {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .plan.featured {
+      border-color: var(--accent);
+      background: linear-gradient(160deg, rgba(0,229,255,0.05), var(--surface));
+    }
+    .plan-badge {
+      position: absolute; top: -1px; left: 40px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 4px 12px;
+      letter-spacing: 0.1em;
+    }
+    .plan-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .plan-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin: 20px 0;
+    }
+    .plan-price sup {
+      font-size: 1.2rem;
+      vertical-align: super;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .plan-price sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 300;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .plan-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 32px; font-weight: 300; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .plan-features li {
+      font-size: 0.87rem;
+      color: var(--muted);
+      display: flex; align-items: flex-start; gap: 10px;
+      font-weight: 300;
+    }
+    .plan-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .plan-features li.muted::before { content: '—'; color: var(--border); }
+    .plan-features li.muted { opacity: 0.4; }
+    .btn-plan {
+      display: block; width: 100%;
+      padding: 14px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: none;
+      text-align: center;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .btn-plan:hover, .plan.featured .btn-plan {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .plan.featured .btn-plan:hover {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-section { background: var(--surface); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2px;
+    }
+    .testimonial {
+      background: var(--bg);
+      padding: 40px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .testimonial::before {
+      content: '"';
+      font-family: 'Syne', sans-serif;
+      font-size: 5rem;
+      color: var(--accent);
+      opacity: 0.15;
+      position: absolute;
+      top: 10px; left: 28px;
+      line-height: 1;
+    }
+    .testimonial-text {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 24px;
+      font-weight: 300;
+      position: relative;
+    }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .author-avatar {
+      width: 40px; height: 40px;
+      background: var(--surface2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .author-role { font-size: 0.75rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+    .stars { color: var(--accent3); font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 14px; }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      padding: 140px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,229,255,0.06), transparent);
+    }
+    .cta-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .cta-section h2 em { font-style: normal; color: var(--accent); }
+    .cta-section p {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 460px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+      line-height: 1.8;
+      position: relative;
+    }
+    .cta-actions { display: flex; flex-direction: column; align-items: center; gap: 0; position: relative; }
+    .btn-whatsapp {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 16px 36px;
+      background: var(--success);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      cursor: none;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,214,143,0.25);
+    }
+    .btn-instagram {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: none;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn-instagram:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(253,29,29,0.25);
+    }
+    .cta-contact-row {
+      display: flex; gap: 16px; justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .cta-email-row {
+      display: flex; gap: 12px; justify-content: center; align-items: center;
+      position: relative;
+      margin-bottom: 0;
+    }
+    .email-input {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      padding: 14px 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      outline: none;
+      width: 280px;
+      letter-spacing: 0.02em;
+      transition: border-color 0.2s;
+    }
+    .email-input::placeholder { color: var(--muted); }
+    .email-input:focus { border-color: var(--accent); }
+    .btn-email {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 14px 24px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      cursor: none;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .btn-email:hover { background: var(--accent); color: var(--bg); }
+    .cta-divider {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--border);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 60px 48px 40px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 48px;
+    }
+    .footer-brand h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.03em;
+    }
+    .footer-brand h3 span { color: var(--accent); }
+    .footer-brand p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 280px; }
+    .footer-col h4 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 0.85rem; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 300; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-bottom p { font-size: 0.75rem; color: var(--border); font-family: 'IBM Plex Mono', monospace; }
+
+    /* ─── FLOATING BADGE ─── */
+    .float-badge {
+      position: fixed; bottom: 32px; right: 32px;
+      z-index: 90;
+      background: var(--success);
+      color: var(--bg);
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 8px 32px rgba(0,214,143,0.3);
+      text-decoration: none;
+      cursor: none;
+      animation: pulse 2.5s ease-in-out infinite;
+      transition: transform 0.2s;
+    }
+    .float-badge:hover { transform: scale(1.04); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(0,214,143,0.3); }
+      50% { box-shadow: 0 8px 48px rgba(0,214,143,0.5); }
+    }
+    .float-dot {
+      width: 8px; height: 8px;
+      background: var(--bg);
+      border-radius: 50%;
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── CHATBOT WIDGET ─── */
+    .chatbot-container {
+      position: fixed;
+      bottom: 32px;
+      right: 170px; /* Posicionado à esquerda do botão do WhatsApp */
+      z-index: 95;
+    }
+    .chatbot-toggle {
+      background: var(--surface);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      cursor: none;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .chatbot-toggle:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .chatbot-toggle .bot-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .chat-window {
+      position: absolute;
+      bottom: 60px;
+      right: 0;
+      width: 320px;
+      height: 400px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .chat-window.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .chat-header {
+      padding: 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+    }
+    .chat-header h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .chat-header h4 span {
+      color: var(--accent);
+    }
+    .chat-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      cursor: none;
+    }
+    .chat-close:hover { color: var(--accent3); }
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .chat-msg.bot {
+      background: var(--surface2);
+      color: var(--text);
+      align-self: flex-start;
+      border-bottom-left-radius: 1px;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    .chat-msg.user {
+      background: rgba(0, 229, 255, 0.1);
+      color: var(--text);
+      align-self: flex-end;
+      border-bottom-right-radius: 1px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+    }
+    .chat-input-area {
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      background: var(--surface2);
+      border-bottom-left-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    .chat-input-area input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 0.82rem;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .chat-input-area input:focus { border-color: var(--accent); }
+    .chat-input-area button {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      padding: 0 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: none;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-stats { flex-wrap: wrap; gap: 32px; }
+      .section { padding: 80px 24px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .step { border-right: none; border-bottom: 1px solid var(--border); }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .cta-section { padding: 80px 24px; }
+      .cta-contact-row { flex-direction: column; align-items: center; }
+      .cta-email-row { flex-direction: column; width: 100%; }
+      .email-input { width: 100%; }
+      .btn-email { width: 100%; text-align: center; }
+      footer { padding: 48px 24px 32px; }
+      
+      /* Ajuste responsivo para mobile nos botões fixos */
+      .chatbot-container {
+        bottom: 85px;
+        right: 24px;
+      }
+      .chat-window {
+        width: calc(100vw - 48px);
+      }
+      .float-badge {
+        bottom: 24px;
+        right: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <nav>
+    <a href="#" class="nav-logo">Alisson<span>Fonseca</span></a>
+    <ul class="nav-links">
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#como-funciona">Como Funciona</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <a href="#contato" class="nav-cta">Chamar Agora</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <p class="hero-tag">Técnico de Informática · Atendimento Rápido</p>
+    <h1>
+      Suporte Técnico
+      <em class="line2">Sem Complicação.</em>
+    </h1>
+    <p class="hero-sub">
+      Seu computador travou? Rede caiu? Vírus na máquina?
+      Resolvemos na hora — presencial ou remoto, no seu tempo.
+    </p>
+    <div class="hero-actions">
+      <a href="#contato" class="btn-primary">Solicitar Atendimento</a>
+      <a href="#como-funciona" class="btn-ghost">Como funciona</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-val">+100<span>.</span></div>
+        <div class="stat-label">clientes atendidos</div>
+      </div>
+      <div>
+        <div class="stat-val">98<span>%</span></div>
+        <div class="stat-label">satisfação</div>
+      </div>
+      <div>
+        <div class="stat-val">&lt;2<span>h</span></div>
+        <div class="stat-label">tempo médio de resposta</div>
+      </div>
+      <div>
+        <div class="stat-val">7<span>d</span></div>
+        <div class="stat-label">disponível na semana</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">Manutenção de Computadores <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Formatação e Instalação <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Remoção de Vírus <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Suporte Remoto <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Redes e Wi-Fi <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Upgrade de Hardware <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Atendimento Domiciliar <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Manutenção de Computadores <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Formatação e Instalação <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Remoção de Vírus <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Suporte Remoto <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Redes e Wi-Fi <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Backup de Dados <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Upgrade de Hardware <span class="ticker-sep">◆</span></span>
+      <span class="ticker-item">Atendimento Domiciliar <span class="ticker-sep">◆</span></span>
+    </div>
+  </div>
+
+  <section class="section" id="servicos">
+    <p class="section-label">Serviços</p>
+    <h2 class="section-title">O que a gente <em>resolve</em> pra você</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🖥️</span>
+        <span class="service-num">01</span>
+        <h3 class="service-title">Formatação & Instalação</h3>
+        <p class="service-desc">Sistema lento ou corrompido? Formatamos e configuramos tudo do zero — Windows, Linux, drivers e programas.</p>
+        
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🛡️</span>
+        <span class="service-num">02</span>
+        <h3 class="service-title">Remoção de Vírus</h3>
+        <p class="service-desc">Limpeza completa de malwares, spywares and ransomwares. Deixamos sua máquina segura e protegida.</p>
+       
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🌐</span>
+        <span class="service-num">03</span>
+        <h3 class="service-title">Redes & Wi-Fi</h3>
+        <p class="service-desc">Configuração de roteadores, redes cabeadas, repetidores e diagnóstico de conexão lenta.</p>
+       
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💻</span>
+        <span class="service-num">04</span>
+        <h3 class="service-title">Suporte Remoto</h3>
+        <p class="service-desc">Atendimento imediato pela internet. Resolvemos a maioria dos problemas sem sair de casa.</p>
+       
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔧</span>
+        <span class="service-num">05</span>
+        <h3 class="service-title">Manutenção de Hardware</h3>
+        <p class="service-desc">Limpeza interna, troca de pasta térmica, substituição de peças, upgrade de memória e SSD.</p>
+       
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💾</span>
+        <span class="service-num">06</span>
+        <h3 class="service-title">Backup de Dados</h3>
+        <p class="service-desc">Backup de dados e configuração de rotinas de backup automático em nuvem.</p>
+        
+      </div>
+    </div>
+  </section>
+
+  <section class="section how-section" id="como-funciona">
+    <p class="section-label s2">Como Funciona</p>
+    <h2 class="section-title">Em <em>4 passos</em> simples</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Você entra em contato</div>
+        <p class="step-desc">WhatsApp, ligação ou formulário. Descreva o problema brevemente — sem termos técnicos necessários.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Diagnóstico rápido</div>
+        <p class="step-desc">Identificamos o problema e enviamos um orçamento claro em até 30 minutos.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Agendamento imediato</div>
+        <p class="step-desc">Presencial ou remoto, você escolhe o horário. Atendemos no mesmo dia quando possível.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Problema resolvido ✓</div>
+        <p class="step-desc">Tudo pronto. Garantia de 30 dias em todos os serviços e suporte pós-atendimento.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="contato">
+    <h2>Seu problema<br /><em>resolvido hoje.</em></h2>
+    <p>Não deixe um problema técnico travar o seu dia. Entre em contato agora e receba atendimento rápido.</p>
+    <div class="cta-actions">
+      <div class="cta-contact-row">
+        <a href="https://wa.me/5582998025511?text=Olá! Preciso de suporte técnico." class="btn-whatsapp" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chamar no WhatsApp
+        </a>
+        <a href="tel:+5582998025511" class="btn-primary">📞 (82) 99802-5511</a>
+        <a href="https://instagram.com/_alissonfonseca" class="btn-instagram" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0 3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Instagram
+        </a>
+      </div>
+      <div class="cta-divider">— ou envie um e-mail —</div>
+      <div class="cta-email-row">
+        <input type="email" class="email-input" placeholder="seu@email.com" id="emailInput" />
+        <a href="#" class="btn-email" id="emailBtn" onclick="sendEmail(event)">Enviar mensagem</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Alisson<span>Fonseca</span></h3>
+        <p>Suporte técnico de informática rápido, honesto e acessível. Atendemos em Maceió e região.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="#">Formatação</a></li>
+          <li><a href="#">Remoção de Vírus</a></li>
+          <li><a href="#">Suporte Remoto</a></li>
+          <li><a href="#">Redes & Wi-Fi</a></li>
+          <li><a href="#">Manutenção de Hardware</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="https://wa.me/5582998025511" target="_blank">WhatsApp</a></li>
+          <li><a href="mailto:alisson@email.com">E-mail</a></li>
+          <li><a href="https://instagram.com/_alissonfonseca" target="_blank">Instagram</a></li>
+          <li><a href="#">Seg–Sáb: 8h–20h</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Alisson Fonseca · Maceió, AL</p>
+      <p>feito com ♥ para clientes reais</p>
+    </div>
+  </footer>
+
+  <div class="chatbot-container">
+    <button class="chatbot-toggle" id="chatToggle" onclick="toggleChat()">
+      <div class="bot-dot"></div>
+      Suporte Online
+    </button>
+    <div class="chat-window" id="chatWindow">
+      <div class="chat-header">
+        <h4>Assistente<span>.sys</span></h4>
+        <button class="chat-close" onclick="toggleChat()">[X]</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg bot">
+          Olá! Sou o assistente virtual do Alisson. Como posso te ajudar com o seu computador hoje?
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Digite sua dúvida..." onkeypress="handleChatKey(event)" />
+        <button onclick="sendChatMessage()">></button>
+      </div>
+    </div>
+  </div>
+
+  <a class="float-badge" href="https://wa.me/5582998025511?text=Olá! Preciso de suporte técnico." target="_blank">
+    <div class="float-dot"></div>
+    WhatsApp
+  </a>
+
+  <script>
+    // Enviar e-mail via mailto
+    function sendEmail(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value.trim();
+      if (!email) { document.getElementById('emailInput').focus(); return; }
+      window.location.href = 'mailto:alisson@email.com?subject=Preciso de suporte técnico&body=Olá Alisson, meu e-mail é ' + email + '. Gostaria de um atendimento.';
+    }
+
+    // Lógica para Abrir/Fechar o Chat
+    function toggleChat() {
+      const chatWindow = document.getElementById('chatWindow');
+      chatWindow.classList.toggle('open');
+    }
+
+    // Captura o Enter no teclado
+    function handleChatKey(e) {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
+    }
+
+    // FUNÇÃO ATUALIZADA: Conexão Real com o Gemini
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const messagesContainer = document.getElementById('chatMessages');
+
+      // 1. Mostra a mensagem que o usuário digitou na tela
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chat-msg user';
+      userMsg.textContent = text;
+      messagesContainer.appendChild(userMsg);
+
+      input.value = '';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      // 2. Cria o balão temporário de "Digitando..."
+      const botMsgText = document.createElement('div');
+      botMsgText.className = 'chat-msg bot';
+      botMsgText.textContent = 'Digitando...';
+      messagesContainer.appendChild(botMsgText);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      try {
+        // 3. Faz a conexão com o seu servidor Node.js local
+        const respostaDoServidor = await fetch('http://localhost:3000/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ mensagem: text })
+        });
+
+        const dados = await respostaDoServidor.json();
+        
+        // 4. Substitui o "Digitando..." pela resposta real que veio do Gemini
+        botMsgText.textContent = dados.resposta;
+
+      } catch (erro) {
+        console.error('Erro ao conversar com o servidor:', erro);
+        botMsgText.textContent = 'Desculpa, meu sistema está temporariamente offline. Se precisar de suporte imediato, pode clicar no botão do WhatsApp!';
+      }
+      
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Cursor personalizado Cyberpunk
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // Efeito de revelar ao rolar a página (Scroll reveal)
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.service-card, .step, .plan, .testimonial').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      obs.observe(el);
+    });
+  </script>
+</body>
+</html>
