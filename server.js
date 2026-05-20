@@ -5,7 +5,7 @@ import 'dotenv/config';
 
 const app = express();
 
-// PROTEÇÃO: Substitua pelo link real do seu site no Netlify (sem barra no final)
+
 app.use(cors({
     origin: 'https://alissonfonsecasuporteti.netlify.app/' 
 }));
@@ -38,13 +38,12 @@ app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body;
         
-        // CORRIGIDO: Validação correta da variável vinda do front-end
         let textoUsuario = mensagem && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
         if (textoUsuario === "") textoUsuario = "Olá";
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: reglasDoChatbot },
+                { role: 'system', content: regrasDoChatbot }, // CORRIGIDO: Variável exata em português
                 { role: 'user', content: textoUsuario }
             ],
             model: 'llama-3.3-70b-versatile', 
