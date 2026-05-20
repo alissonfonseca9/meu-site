@@ -34,9 +34,7 @@ REGRAS DE SERVIÇO:
 
 Se o usuário enviar apenas uma saudação inicial (Oi, Olá), responda de forma receptiva: 'Olá! Como posso ajudar com a manutenção do seu computador ou notebook hoje?'`;
 
-
-
-app.post('/chat', async (req, res) => {  // <--- ACHOU! Começa aqui na linha 41
+app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body;
         
@@ -45,15 +43,13 @@ app.post('/chat', async (req, res) => {  // <--- ACHOU! Começa aqui na linha 41
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: regrasDoChatbot },
+                { role: 'system', content: ...regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
-            model: 'llama-3.3-70b-specdec',
+            model: 'llama-3.3-70b-specdec', 
             temperature: 0.3, 
             max_tokens: 120,  
         });
-
-
 
         let respostaFinal = chatCompletion.choices[0]?.message?.content?.trim() || "";
 
@@ -62,7 +58,7 @@ app.post('/chat', async (req, res) => {  // <--- ACHOU! Começa aqui na linha 41
         }
 
         res.json({ 
-            resposta: respuestaFinal,
+            resposta: respostaFinal,
             text: respostaFinal 
         });
 
@@ -70,7 +66,12 @@ app.post('/chat', async (req, res) => {  // <--- ACHOU! Começa aqui na linha 41
         console.error("--- ERRO DETALHADO DA GROQ ---");
         console.error(JSON.stringify(error, null, 2));
         console.error("------------------------------");
-        res.status(500).json({ erro: "Erro na comunicação com a IA." });
+        
+       
+        res.json({ 
+            resposta: "Desculpe, meu sistema está passando por uma instabilidade temporária. Se precisar de suporte imediato, pode clicar no botão do WhatsApp!",
+            text: "Desculpe, meu sistema está passando por uma instabilidade temporária. Se precisar de suporte imediato, pode clicar no botão do WhatsApp!"
+        });
     }
 });
 
