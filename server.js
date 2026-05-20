@@ -61,9 +61,10 @@ app.post('/chat', async (req, res) => {
             text: respostaFinal 
         });
 
-    } catch (error) {
+  } catch (error) {
         console.error("--- ERRO DETALHADO DA GROQ ---");
-        console.error(JSON.stringify(error, null, 2));
+       
+        console.error(error instanceof Error ? error.message : error); 
         console.error("------------------------------");
         
      
