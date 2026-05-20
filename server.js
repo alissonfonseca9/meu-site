@@ -30,7 +30,7 @@ REGRAS DE SERVIÇO:
 2. ESCOPO: Notebooks e desktops (computadores de mesa) em Maceió.
 3. SUPORTE TÉCNICO: Formatação, limpeza interna, troca de pasta térmica, upgrade de SSD/Memória, troca de peças defeituosas e otimização. NÃO faz eletrônica avançada (solda em placa-mãe).
 4. ORÇAMENTOS: Diga que a análise é necessária e oriente a falar com o Alisson no WhatsApp pelo botão do site.
-5. PRAZOS: Diagnósticos e manutenções levam de 24 a 48 horas úteis.
+5. PRAZOS: Diagnósticos e manutenções levam de 24 a 48 hours úteis.
 
 Se o usuário enviar apenas uma saudação inicial (Oi, Olá), responda de forma receptiva: 'Olá! Como posso ajudar com a manutenção do seu computador ou notebook hoje?'`;
 
@@ -43,8 +43,7 @@ app.post('/chat', async (req, res) => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: 'system', content: ...regrasDoChatbot },
-                { role: 'user', content: textoUsuario }
+                { role: 'system', content: regrasDoChatbot },
             ],
             model: 'llama-3.3-70b-specdec', 
             temperature: 0.3, 
@@ -67,7 +66,7 @@ app.post('/chat', async (req, res) => {
         console.error(JSON.stringify(error, null, 2));
         console.error("------------------------------");
         
-       
+     
         res.json({ 
             resposta: "Desculpe, meu sistema está passando por uma instabilidade temporária. Se precisar de suporte imediato, pode clicar no botão do WhatsApp!",
             text: "Desculpe, meu sistema está passando por uma instabilidade temporária. Se precisar de suporte imediato, pode clicar no botão do WhatsApp!"
