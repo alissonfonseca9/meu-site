@@ -10,7 +10,7 @@ app.use(express.json());
 // Conecta com a API da Groq
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const regrasDoChatbot = `Você é o Assistente.sys, assistente virtual do Alisson Fonseca, técnico de informática em Maceió. Seu objetivo é responder dúvidas técnicas de forma curta, clara e direta, seguindo REGRAS OBRIGATÓRIAS DE EXCLUSÃO:
+const规则DoChatbot = `Você é o Assistente.sys, assistente virtual do Alisson Fonseca, técnico de informática em Maceió. Seu objetivo é responder dúvidas técnicas de forma curta, clara e direta, seguindo REGRAS OBRIGATÓRIAS DE EXCLUSÃO:
 
 1. PROIBIÇÃO DE IGNORAR OU FICAR EM BRANCO: Você NUNCA deve ignorar uma mensagem do usuário, e NUNCA deve enviar uma resposta vazia. Toda e qualquer mensagem recebida DEVE gerar uma resposta de texto clara e imediata.
 2. PROIBIÇÃO ABSOLUTA DE CELULARES: Você NÃO conserta, NÃO repara e NÃO entende de celulares, tablets, TVs, impressoras ou videogames. Se o usuário perguntar sobre QUALQUER um desses aparelhos ou indicar necessidade de suporte para eles, responda na hora de forma educada e firme: 'O Alisson não trabalha com celulares ou outros eletrônicos, apenas com computadores e notebooks.'
@@ -25,28 +25,16 @@ Se a mensagem do usuário for uma palavra solta, saudação ou confusa, responda
 app.post('/chat', async (req, res) => {
     try {
         const { mensagem } = req.body;
-        
-        // CORRIGIDO: Validação limpa e sem risco de quebra por variáveis trocadas
-        let textoUsuario = "Olá";
-        if (mensagem) {
-            if (typeof mensagem === 'string') {
-                textoUsuario = mensagem.trim();
-            } else if (typeof mensagem === 'object' && mensagem.text) {
-                textoUsuario = String(mensagem.text).trim();
-            } else {
-                textoUsuario = String(mensagem).trim();
-            }
-        }
-
+        let textoUsuario = mensagem && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
         if (textoUsuario === "") textoUsuario = "Olá";
 
-        // Chama o modelo Llama 3 na Groq
+        // Usando o modelo Llama 3 ultra-atualizado e estável da Groq
         const chatCompletion = await groq.chat.completions.create({
             messages: [
                 { role: 'system', content: regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
-            model: 'llama3-8b-8192',
+            model: 'llama-3.3-70b-versatile', 
             temperature: 0.4,
         });
 
@@ -56,15 +44,18 @@ app.post('/chat', async (req, res) => {
             respostaFinal = "Olá! Eu sou o Assistente.sys. Como posso ajudar com a manutenção do seu computador ou notebook hoje?";
         }
 
-        // Retorna os dois formatos para garantir compatibilidade com o front-end
         res.json({ 
             resposta: respostaFinal,
             text: respostaFinal 
         });
 
     } catch (error) {
-        console.error("Erro detectado na rota /chat:", error);
-        res.status(500).json({ erro: "Erro interno no servidor do chat.", detalhe: error.message });
+        // Exibe o erro de forma completa e aberta no terminal do Render para podermos ler tudo
+        console.error("--- ERRO DETALHADO DA GROQ ---");
+        console.error(JSON.stringify(error, null, 2));
+        console.error("------------------------------");
+        
+        res.status(500).json({ erro: "Erro na comunicação com a IA." });
     }
 });
 
