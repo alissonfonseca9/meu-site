@@ -41,12 +41,12 @@ app.post('/chat', async (req, res) => {
         let textoUsuario = mensagem && typeof mensagem === 'string' ? mensagem.trim() : "Olá";
         if (textoUsuario === "") textoUsuario = "Olá";
 
-        const chatCompletion = await groq.chat.completions.create({
+      const chatCompletion = await groq.chat.completions.create({
             messages: [
                 { role: 'system', content: regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
-            model: 'llama3-70b-8192', 
+            model: 'llama3-8b-8192',
             temperature: 0.3, 
             max_tokens: 120,  
         });
