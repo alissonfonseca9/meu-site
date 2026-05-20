@@ -48,7 +48,7 @@ app.post('/chat', async (req, res) => {  // <--- ACHOU! Começa aqui na linha 41
                 { role: 'system', content: regrasDoChatbot },
                 { role: 'user', content: textoUsuario }
             ],
-            model: 'llama-3.3-70b-versatile', // <--- A linha do modelo para alterar fica bem aqui (linha 54)
+            model: 'llama-3.3-70b-specdec',
             temperature: 0.3, 
             max_tokens: 120,  
         });
