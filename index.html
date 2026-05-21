@@ -29,12 +29,34 @@
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
       overflow-x: hidden;
-    
+      cursor: none;
     }
 
-    
-    
-    
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    }
+    .cursor-ring {
+      width: 34px; height: 34px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+      opacity: 0.6;
+    }
+    body:has(a:hover) .cursor, body:has(button:hover) .cursor, body:has(.chatbot-toggle:hover) .cursor, body:has(.chat-close:hover) .cursor, body:has(.chat-input-area button:hover) .cursor {
+      width: 16px; height: 16px;
+      background: var(--accent3);
+    }
+
     /* ─── NAV ─── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -72,6 +94,7 @@
       border: 1px solid var(--accent);
       color: var(--accent);
       border-radius: 4px;
+      cursor: none;
       letter-spacing: 0.06em;
       transition: background 0.2s, color 0.2s;
       text-decoration: none;
@@ -166,7 +189,7 @@
       color: var(--bg);
       border: none;
       border-radius: 4px;
-
+      cursor: none;
       letter-spacing: 0.02em;
       transition: transform 0.2s, box-shadow 0.2s;
       text-decoration: none;
@@ -275,7 +298,7 @@
       position: relative;
       overflow: hidden;
       transition: border-color 0.3s, background 0.3s;
-
+      cursor: none;
     }
     .service-card::before {
       content: '';
@@ -450,6 +473,7 @@
       border: 1px solid var(--accent);
       background: transparent;
       color: var(--accent);
+      cursor: none;
       text-align: center;
       letter-spacing: 0.04em;
       transition: background 0.2s, color 0.2s;
@@ -559,6 +583,7 @@
       color: var(--bg);
       border: none;
       border-radius: 4px;
+      cursor: none;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s;
       display: flex; align-items: center; gap: 10px;
@@ -576,6 +601,7 @@
       color: #fff;
       border: none;
       border-radius: 4px;
+      cursor: none;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s;
       display: flex; align-items: center; gap: 10px;
@@ -619,6 +645,7 @@
       border: 1px solid var(--accent);
       color: var(--accent);
       border-radius: 4px;
+      cursor: none;
       text-decoration: none;
       transition: background 0.2s, color 0.2s;
       white-space: nowrap;
@@ -687,6 +714,7 @@
       display: flex; align-items: center; gap: 8px;
       box-shadow: 0 8px 32px rgba(0,214,143,0.3);
       text-decoration: none;
+      cursor: none;
       animation: pulse 2.5s ease-in-out infinite;
       transition: transform 0.2s;
     }
@@ -728,6 +756,7 @@
       align-items: center;
       gap: 8px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      cursor: none;
       transition: border-color 0.3s, transform 0.2s;
     }
     .chatbot-toggle:hover {
@@ -785,6 +814,7 @@
       color: var(--muted);
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.8rem;
+      cursor: none;
     }
     .chat-close:hover { color: var(--accent3); }
     .chat-messages {
@@ -846,6 +876,7 @@
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       font-size: 0.8rem;
+      cursor: none;
     }
 
     /* ─── RESPONSIVE ─── */
@@ -882,6 +913,8 @@
 </head>
 <body>
 
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
 
   <nav>
     <a href="#" class="nav-logo">Alisson<span>Fonseca</span></a>
@@ -1180,7 +1213,19 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-
+    // Cursor personalizado Cyberpunk
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
 
     // Efeito de revelar ao rolar a página (Scroll reveal)
     const obs = new IntersectionObserver(entries => {
